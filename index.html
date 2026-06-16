@@ -107,6 +107,22 @@ header .count {
 }
 .hidden { display:none !important; }
 
+/* Hotspot */
+.hotspot { margin-bottom:36px; }
+.hotspot-header { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.hotspot-dot { width:8px; height:8px; background:#f56c6c; border-radius:50%; animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.hotspot-title { font-size:18px; font-weight:600; color:var(--text); }
+.hotspot-date { font-size:13px; color:var(--text4); }
+.hotspot-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+@media (max-width:900px) { .hotspot-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px) { .hotspot-grid { grid-template-columns:1fr; } }
+.hotspot-card {
+  background:var(--badge-bg); border:1px solid var(--border); border-radius:10px;
+  padding:14px 18px; font-size:14px; color:var(--text2); line-height:1.6;
+}
+.hotspot-card strong { color:var(--brand); }
+
 footer { text-align:center; padding:64px 0 56px; background:var(--bg-alt); margin-top:80px; }
 footer h2 { font-size:22px; font-weight:600; color:var(--text); margin-bottom:10px; }
 footer p { font-size:15px; color:var(--text3); max-width:420px; margin:0 auto; }
@@ -126,6 +142,9 @@ footer .qrcode-hint span { color:var(--brand); font-weight:700; }
 </header>
 
 <div class="container">
+  <!-- 🔴 今日AI工具热点 -->
+  <div class="hotspot" id="hotspot"></div>
+
   <div class="search-wrap">
     <input type="text" id="search" placeholder="搜索工具名或关键词…" autocomplete="off">
   </div>
@@ -162,6 +181,23 @@ function toggleTheme() {
     document.getElementById('themeBtn').innerHTML = '☀️ 浅色模式';
   }
 })();
+
+const HOTSPOT = {
+  date:"6月16日",
+  items:[
+    {t:"🎬",h:"腾讯Ardot公测",d:"腾讯AI设计智能体，一句话生成可编辑UI，设计→代码一键导出 🇨🇳"},
+    {t:"🎙️",h:"Subvideo.ai",d:"AI配音+字幕一体化，Whisper精准转录，支持40+语言翻译配音 🇨🇳"},
+    {t:"🎨",h:"Mew Design",d:"自然语言驱动的免费AI设计生成器，海报/传单/社交媒体图一句话出稿 🇨🇳"}
+  ]
+};
+
+function renderHotspot(){
+  if(!HOTSPOT.items.length) return;
+  const h=document.getElementById('hotspot');
+  const cards=HOTSPOT.items.map(i=>`<div class="hotspot-card"><strong>${i.t} ${i.h}</strong> — ${i.d}</div>`).join('');
+  h.innerHTML=`<div class="hotspot-header"><div class="hotspot-dot"></div><span class="hotspot-title">🔴 今日AI工具热点</span><span class="hotspot-date">${HOTSPOT.date}</span></div><div class="hotspot-grid">${cards}</div>`;
+}
+renderHotspot();
 
 const TOOLS = [
   {n:"Kling 3.0/可灵",c:"视频生成",d:"快手AI视频生成，4K/60fps",u:"https://klingai.com",r:4},

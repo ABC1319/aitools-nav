@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>江江好用 · AI创作工具导航</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08090a; --panel: #0f1011; --surface: #191a1b; --elevated: #23252a;
+  --text: #f7f8f8; --text2: #d0d6e0; --text3: #8a8f98; --text4: #62666d;
+  --brand: #5e6ad2; --brand-hover: #7170ff; --border: rgba(255,255,255,0.1);
+  --border-subtle: rgba(255,255,255,0.05);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  background: var(--bg); color: var(--text2); line-height:1.6;
+  font-feature-settings: 'cv01','ss03';
+}
+.container { max-width:1200px; margin:0 auto; padding:0 24px; }
+
+header { padding:80px 0 48px; text-align:center; }
+header h1 {
+  font-size:48px; font-weight:510; color:var(--text);
+  letter-spacing:-1.056px; line-height:1.1; margin-bottom:16px;
+}
+header p { font-size:18px; color:var(--text3); letter-spacing:-0.165px; }
+header .count {
+  display:inline-block; margin-top:12px; padding:4px 16px;
+  background:var(--surface); border:1px solid var(--border); border-radius:9999px;
+  font-size:13px; color:var(--brand); font-weight:510;
+}
+
+.search-wrap { margin-bottom:24px; }
+.search-wrap input {
+  width:100%; padding:14px 20px; font-size:16px; color:var(--text);
+  background:var(--panel); border:1px solid var(--border); border-radius:8px;
+  font-family:inherit; font-feature-settings:'cv01','ss03';
+  outline:none; transition:border-color 0.2s;
+}
+.search-wrap input:focus { border-color:var(--brand); }
+.search-wrap input::placeholder { color:var(--text4); }
+
+.filters-wrap { margin-bottom:40px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.filters-wrap::-webkit-scrollbar { height:0; }
+.filters { display:flex; gap:8px; white-space:nowrap; min-width:max-content; }
+.filter-pill {
+  padding:5px 16px; border-radius:9999px; font-size:14px; font-weight:510;
+  color:var(--text3); background:transparent; border:1px solid var(--border);
+  cursor:pointer; transition:all 0.15s; user-select:none; flex-shrink:0;
+}
+.filter-pill:hover { color:var(--text2); border-color:var(--text3); }
+.filter-pill.active { color:#fff; background:var(--brand); border-color:var(--brand); }
+
+.grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media (max-width:900px) { .grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px) { .grid { grid-template-columns:1fr; } header h1 { font-size:32px; letter-spacing:-0.704px; } }
+.card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:8px; padding:24px; transition:border-color 0.2s,transform 0.2s;
+  display:flex; flex-direction:column;
+}
+.card:hover { border-color:rgba(94,106,210,0.4); }
+.card-name { font-size:18px; font-weight:590; color:var(--text); margin-bottom:4px; }
+.card-date { font-size:12px; color:var(--text4); margin-bottom:10px; }
+.card-cat {
+  display:inline-block; padding:3px 12px; border-radius:9999px;
+  font-size:13px; font-weight:510; color:var(--brand); background:rgba(94,106,210,0.1);
+  margin-bottom:12px; align-self:flex-start;
+}
+.card-desc { font-size:14px; color:var(--text3); line-height:1.7; margin-bottom:16px; flex:1; }
+.card-link {
+  display:inline-block; padding:7px 16px; border-radius:6px;
+  font-size:13px; font-weight:510; color:var(--text); text-align:center;
+  background:rgba(94,106,210,0.15); border:1px solid rgba(94,106,210,0.3);
+  text-decoration:none; transition:all 0.15s; align-self:flex-start;
+}
+.card-link:hover { background:var(--brand); border-color:var(--brand); color:#fff; }
+.card-link.disabled {
+  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);
+  color:var(--text4); pointer-events:none; cursor:not-allowed;
+}
+.hidden { display:none !important; }
+
+.divider { border-top:1px solid var(--border); margin:80px 0 0; }
+footer { text-align:center; padding:60px 0; background:var(--panel); }
+footer h2 { font-size:24px; font-weight:510; color:var(--text); margin-bottom:12px; }
+footer p { font-size:15px; color:var(--text3); }
+footer .qrcode-hint { margin-top:16px; padding:12px 24px; background:var(--surface); border-radius:8px; display:inline-block; border:1px solid var(--border); }
+footer .qrcode-hint span { color:var(--brand); font-weight:590; }
+</style>
+</head>
+<body>
+<header class="container">
+  <h1>江江好用 · AI创作工具导航</h1>
+  <p>每日精选AI创作工具，覆盖视频生成 · 图像生成 · 设计工具 · 3D创作</p>
+  <div class="count">📰 已收录 <span id="toolCount">0</span> 个工具，持续更新</div>
+</header>
+
+<div class="container">
+  <div class="search-wrap">
+    <input type="text" id="search" placeholder="搜索工具名或关键词…" autocomplete="off">
+  </div>
+  <div class="filters-wrap"><div class="filters" id="filters"></div></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="divider"></div>
+<footer>
+  <h2>关注「江江好用」公众号</h2>
+  <p>每天早上获取最新AI创作工具推荐，以上工具均来自每日日报精选</p>
+  <div class="qrcode-hint">🔍 微信搜索 <span>江江好用</span> 关注</div>
+</footer>
+
+<script>
+const TOOLS = [
+  {n:"Kling 3.0/可灵",c:"视频生成",d:"快手AI视频生成，4K/60fps",u:"https://klingai.com",p:"6月10日"},
+  {n:"Veo 3.1",c:"视频生成",d:"Google视频生成，原生音频+4K",p:"6月10日"},
+  {n:"Sora 2",c:"视频生成",d:"OpenAI视频生成，已停服",p:"6月10日"},
+  {n:"Seedance 2.0",c:"视频生成",d:"字节多模态视频模型，12路参考输入，1080p 🇨🇳",u:"https://seed.bytedance.com/zh/seedance2_0",p:"6月8日"},
+  {n:"Seedance 3.0",c:"视频生成",d:"字节下一代视频模型，1小时长视频+多语情感配音 🇨🇳",u:"https://seed.bytedance.com/",p:"6月12日"},
+  {n:"JoyAI-Echo",c:"视频生成",d:"京东开源5分钟长视频生成框架，跨镜头音画一致 🇨🇳",u:"https://github.com/jd-opensource/joyai-echo",p:"6月14日"},
+  {n:"P-Video-Avatar",c:"视频生成",d:"Pruna AI单张照片生成动态数字人，10秒出片",u:"https://www.scenario.com/blog/meet-p-video-avatar",p:"6月15日"},
+  {n:"Midjourney",c:"图像/视频生成",d:"V8.1速度提升4-5倍+首款视频模型V1",u:"https://www.midjourney.com",p:"6月10日"},
+  {n:"Z-Image",c:"图像生成",d:"阿里通义开源60亿参数图像生成器 🇨🇳",u:"https://zimage.design/zh/",p:"6月10日"},
+  {n:"Raphael AI",c:"图像生成",d:"全球首个无限免费AI图像生成器",u:"https://raphael.app/zh",p:"6月12日"},
+  {n:"Imagen 4 Ultra",c:"图像生成",d:"Google真实感最强图像API",p:"6月12日"},
+  {n:"Ideogram 4.0",c:"图像生成",d:"开源93亿参数，文字渲染准确率超越800亿大模型",u:"https://ideogram.ai/",p:"6月12日"},
+  {n:"Reve 2.0",c:"图像生成",d:"4K原生图像模型，布局式精确控制，全球第2",u:"https://www.reve.com",p:"6月15日"},
+  {n:"Figma",c:"设计工具",d:"全面推出AI设计功能，1万积分免费",u:"https://www.figma.com",p:"6月10日"},
+  {n:"Pixso",c:"设计工具",d:"国内设计协作平台，AI智能设计 🇨🇳",u:"https://pixso.cn",p:"6月10日"},
+  {n:"Felo AI Designer",c:"设计工具",d:"8+模型集成，30秒出稿",u:"https://felo.ai",p:"6月11日"},
+  {n:"Genspark AI Design",c:"设计工具",d:"每天100免费积分，16+设计类别",u:"https://www.genspark.ai",p:"6月11日"},
+  {n:"Open Design 0.9.0",c:"设计工具",d:"Claude Design开源替代，155个Skill+150套设计系统",u:"https://open-design.ai/zh/",p:"6月13日"},
+  {n:"Lovart",c:"设计工具",d:"全球首个多模态AI设计Agent公测，海报VI故事板",u:"https://www.lovart.ai/zh",p:"6月14日"},
+  {n:"腾讯Ardot",c:"设计工具",d:"腾讯AI设计智能体公测，一句话生成可编辑UI设计稿 🇨🇳",u:"https://ardot.tencent.com/",p:"6月16日"},
+  {n:"Mew Design",c:"设计工具",d:"自然语言驱动的免费AI设计生成器 🇨🇳",u:"https://mew.design/zh",p:"6月16日"},
+  {n:"Meshy 3D Agent",c:"3D创作",d:"全球首个3D创作AI Agent，多轮对话产出整套3D资产",u:"https://www.meshy.ai/",p:"6月13日"},
+  {n:"Runway Aleph 2.0",c:"视频编辑",d:"编辑一帧自动应用全片",u:"https://runwayml.com",p:"6月11日"},
+  {n:"Subvideo.ai",c:"字幕配音",d:"AI配音+字幕一体化，Whisper精准转录，40+语言 🇨🇳",u:"https://subvideo.ai/zh/",p:"6月16日"},
+  {n:"Vibbit",c:"短视频创作",d:"AI Agent + 57个工具短视频平台",u:"https://vibbit.ai/zh-CN",p:"6月12日"},
+  {n:"LumenX Studio",c:"短视频创作",d:"阿里开源AI短漫剧全链路自动化平台 🇨🇳",u:"https://github.com/alibaba/LumenX",p:"6月14日"},
+  {n:"OiiOii 2.0",c:"短视频创作",d:"国产AI视频创作Agent，智能画布+拉片复刻 🇨🇳",u:"https://oiioii.ai",p:"6月15日"},
+  {n:"腾讯Miora",c:"创意智能体",d:"腾讯全场景创意智能体工作室 🇨🇳",u:"https://miora.design/",p:"6月13日"},
+  {n:"ElevenCreative Flows Agent",c:"创意工作流",d:"50+模型画布式视频工作流",u:"https://elevenlabs.io/app/flows",p:"6月12日"},
+  {n:"Felo Video",c:"文档转视频",d:"文档/网页转视频，10分钟出片",u:"https://felo.ai",p:"6月12日"},
+  {n:"Colossyan Cora",c:"企业AI视频",d:"企业培训视频Agent，PDF/PPT变视频",u:"https://www.colossyan.com",p:"6月12日"},
+  {n:"Utopai PAI 2.0",c:"叙事视频",d:"AI叙事视频平台，ARR $11M",u:"https://pai.utopaistudios.com",p:"6月12日"},
+  {n:"ComfyUI",c:"工作流工具",d:"节点式AI工作流，v0.24.0新增Flux2/Grok节点",u:"https://comfy.org",p:"6月10日"},
+  {n:"Grok Imagine",c:"多模态生成",d:"xAI图片+视频+音频统一API",u:"https://grok.com/imagine",p:"6月11日"}
+];
+
+const allCats = [...new Set(TOOLS.map(t=>t.c))];
+const grid = document.getElementById('grid');
+const search = document.getElementById('search');
+const filters = document.getElementById('filters');
+const count = document.getElementById('toolCount');
+
+count.textContent = TOOLS.length;
+
+let activeCat = null;
+filters.innerHTML = '<span class="filter-pill active" data-cat="">全部</span>';
+allCats.forEach(c => {
+  filters.innerHTML += `<span class="filter-pill" data-cat="${c}">${c}</span>`;
+});
+
+function formatDate(d) { return d || ''; }
+
+function render(filterCat, query) {
+  query = query.toLowerCase();
+  let shown = 0;
+  grid.innerHTML = '';
+  TOOLS.forEach(t => {
+    const matchCat = !filterCat || t.c === filterCat;
+    const matchQ = !query || t.n.toLowerCase().includes(query) || t.d.toLowerCase().includes(query);
+    if (!matchCat || !matchQ) return;
+    shown++;
+    const dateHtml = t.p ? `<div class="card-date">📰 收录于 ${t.p} 日报</div>` : '';
+    const link = t.u
+      ? `<a href="${t.u}" target="_blank" rel="noopener" class="card-link">🔗 访问官网</a>`
+      : `<span class="card-link disabled">暂无链接</span>`;
+    grid.innerHTML += `<div class="card">
+      <div class="card-name">${t.n}</div>
+      ${dateHtml}
+      <div class="card-cat">${t.c}</div>
+      <div class="card-desc">${t.d}</div>
+      ${link}
+    </div>`;
+  });
+  count.textContent = shown;
+}
+
+render(null, '');
+
+filters.addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-pill')) return;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  e.target.classList.add('active');
+  activeCat = e.target.dataset.cat || null;
+  render(activeCat, search.value);
+});
+
+search.addEventListener('input', () => render(activeCat, search.value));
+</script>
+</body>
+</html>

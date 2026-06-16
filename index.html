@@ -1,43 +1,67 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>江江好用 · AI创作工具导航</title>
+<title>赛博上片指南 · AI创作工具导航</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #08090a; --panel: #0f1011; --surface: #191a1b; --elevated: #23252a;
+  --bg: #ffffff; --bg-alt: #f6f5f4; --surface: #ffffff;
+  --text: rgba(0,0,0,0.9); --text2: #615d59; --text3: #a39e98; --text4: #c4bfb8;
+  --brand: #0075de; --brand-hover: #005bab;
+  --border: rgba(0,0,0,0.1); --border-hover: rgba(0,0,0,0.2);
+  --shadow: 0 4px 18px rgba(0,0,0,0.04),0 2px 7.85px rgba(0,0,0,0.027),0 0.8px 2.93px rgba(0,0,0,0.02);
+  --badge-bg: #f2f9ff; --badge-text: #097fe8;
+  --link-bg: #f2f9ff; --link-border: rgba(0,117,222,0.2); --link-hover-bg: #0075de; --link-hover-text: #fff;
+  --disabled-bg: #f0efee; --disabled-text: #a39e98; --disabled-border: rgba(0,0,0,0.05);
+  --toggle-bg: #f0efee; --toggle-icon: '🌙';
+}
+[data-theme="dark"] {
+  --bg: #08090a; --bg-alt: #0f1011; --surface: #191a1b;
   --text: #f7f8f8; --text2: #d0d6e0; --text3: #8a8f98; --text4: #62666d;
-  --brand: #5e6ad2; --brand-hover: #7170ff; --border: rgba(255,255,255,0.1);
-  --border-subtle: rgba(255,255,255,0.05);
+  --brand: #5e6ad2; --brand-hover: #7170ff;
+  --border: rgba(255,255,255,0.1); --border-hover: rgba(255,255,255,0.2);
+  --shadow: none;
+  --badge-bg: rgba(94,106,210,0.15); --badge-text: #7170ff;
+  --link-bg: rgba(94,106,210,0.15); --link-border: rgba(94,106,210,0.3); --link-hover-bg: #5e6ad2; --link-hover-text: #fff;
+  --disabled-bg: rgba(255,255,255,0.03); --disabled-text: #62666d; --disabled-border: rgba(255,255,255,0.05);
+  --toggle-bg: #23252a; --toggle-icon: '☀️';
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
-  background: var(--bg); color: var(--text2); line-height:1.6;
-  font-feature-settings: 'cv01','ss03';
+  background: var(--bg); color: var(--text2); line-height:1.6; transition:background 0.3s;
 }
 .container { max-width:1200px; margin:0 auto; padding:0 24px; }
 
-header { padding:80px 0 48px; text-align:center; }
-header h1 {
-  font-size:48px; font-weight:510; color:var(--text);
-  letter-spacing:-1.056px; line-height:1.1; margin-bottom:16px;
+/* Theme Toggle */
+.theme-bar { display:flex; justify-content:flex-end; padding:16px 24px; }
+.theme-btn {
+  padding:6px 16px; border-radius:9999px; font-size:14px; font-weight:500;
+  background:var(--toggle-bg); border:1px solid var(--border); color:var(--text2);
+  cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:6px;
+  font-family:inherit;
 }
-header p { font-size:18px; color:var(--text3); letter-spacing:-0.165px; }
+.theme-btn:hover { border-color:var(--brand); }
+
+header { padding:48px 0 40px; text-align:center; }
+header h1 {
+  font-size:40px; font-weight:700; color:var(--text);
+  letter-spacing:-1.2px; line-height:1.2; margin-bottom:12px;
+}
+header p { font-size:18px; color:var(--text3); }
 header .count {
-  display:inline-block; margin-top:12px; padding:4px 16px;
-  background:var(--surface); border:1px solid var(--border); border-radius:9999px;
-  font-size:13px; color:var(--brand); font-weight:510;
+  display:inline-block; margin-top:14px; padding:6px 20px;
+  background:var(--badge-bg); border-radius:9999px;
+  font-size:14px; font-weight:600; color:var(--badge-text);
 }
 
-.search-wrap { margin-bottom:24px; }
+.search-wrap { margin-bottom:20px; }
 .search-wrap input {
   width:100%; padding:14px 20px; font-size:16px; color:var(--text);
-  background:var(--panel); border:1px solid var(--border); border-radius:8px;
-  font-family:inherit; font-feature-settings:'cv01','ss03';
-  outline:none; transition:border-color 0.2s;
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  font-family:inherit; outline:none; transition:border-color 0.2s; box-shadow:var(--shadow);
 }
 .search-wrap input:focus { border-color:var(--brand); }
 .search-wrap input::placeholder { color:var(--text4); }
@@ -46,54 +70,57 @@ header .count {
 .filters-wrap::-webkit-scrollbar { height:0; }
 .filters { display:flex; gap:8px; white-space:nowrap; min-width:max-content; }
 .filter-pill {
-  padding:5px 16px; border-radius:9999px; font-size:14px; font-weight:510;
-  color:var(--text3); background:transparent; border:1px solid var(--border);
+  padding:6px 18px; border-radius:9999px; font-size:14px; font-weight:500;
+  color:var(--text2); background:transparent; border:1px solid var(--border);
   cursor:pointer; transition:all 0.15s; user-select:none; flex-shrink:0;
 }
-.filter-pill:hover { color:var(--text2); border-color:var(--text3); }
+.filter-pill:hover { border-color:var(--text3); }
 .filter-pill.active { color:#fff; background:var(--brand); border-color:var(--brand); }
 
-.grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 @media (max-width:900px) { .grid { grid-template-columns:repeat(2,1fr); } }
-@media (max-width:600px) { .grid { grid-template-columns:1fr; } header h1 { font-size:32px; letter-spacing:-0.704px; } }
+@media (max-width:600px) { .grid { grid-template-columns:1fr; } header h1 { font-size:28px; letter-spacing:-0.6px; } }
 .card {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:8px; padding:24px; transition:border-color 0.2s,transform 0.2s;
-  display:flex; flex-direction:column;
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:28px; box-shadow:var(--shadow); transition:all 0.2s; display:flex; flex-direction:column;
 }
-.card:hover { border-color:rgba(94,106,210,0.4); }
-.card-name { font-size:18px; font-weight:590; color:var(--text); margin-bottom:4px; }
-.card-date { font-size:12px; color:var(--text4); margin-bottom:10px; }
+.card:hover { border-color:var(--border-hover); transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,0.08); }
+[data-theme="dark"] .card:hover { box-shadow:0 0 0 1px rgba(94,106,210,0.2); }
+.card-name { font-size:20px; font-weight:700; color:var(--text); margin-bottom:4px; letter-spacing:-0.2px; }
+.card-date { font-size:13px; color:var(--text3); margin-bottom:10px; }
 .card-cat {
-  display:inline-block; padding:3px 12px; border-radius:9999px;
-  font-size:13px; font-weight:510; color:var(--brand); background:rgba(94,106,210,0.1);
-  margin-bottom:12px; align-self:flex-start;
+  display:inline-block; padding:4px 14px; border-radius:9999px;
+  font-size:13px; font-weight:600; color:var(--badge-text); background:var(--badge-bg);
+  margin-bottom:14px; align-self:flex-start; letter-spacing:0.1px;
 }
-.card-desc { font-size:14px; color:var(--text3); line-height:1.7; margin-bottom:16px; flex:1; }
+.card-desc { font-size:15px; color:var(--text2); line-height:1.7; margin-bottom:18px; flex:1; }
 .card-link {
-  display:inline-block; padding:7px 16px; border-radius:6px;
-  font-size:13px; font-weight:510; color:var(--text); text-align:center;
-  background:rgba(94,106,210,0.15); border:1px solid rgba(94,106,210,0.3);
+  display:inline-block; padding:8px 20px; border-radius:6px;
+  font-size:14px; font-weight:600; text-align:center;
+  background:var(--link-bg); border:1px solid var(--link-border); color:var(--brand);
   text-decoration:none; transition:all 0.15s; align-self:flex-start;
 }
-.card-link:hover { background:var(--brand); border-color:var(--brand); color:#fff; }
+.card-link:hover { background:var(--link-hover-bg); border-color:var(--link-hover-bg); color:var(--link-hover-text); }
 .card-link.disabled {
-  background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05);
-  color:var(--text4); pointer-events:none; cursor:not-allowed;
+  background:var(--disabled-bg); border:1px solid var(--disabled-border);
+  color:var(--disabled-text); pointer-events:none; cursor:not-allowed;
 }
 .hidden { display:none !important; }
 
-.divider { border-top:1px solid var(--border); margin:80px 0 0; }
-footer { text-align:center; padding:60px 0; background:var(--panel); }
-footer h2 { font-size:24px; font-weight:510; color:var(--text); margin-bottom:12px; }
-footer p { font-size:15px; color:var(--text3); }
-footer .qrcode-hint { margin-top:16px; padding:12px 24px; background:var(--surface); border-radius:8px; display:inline-block; border:1px solid var(--border); }
-footer .qrcode-hint span { color:var(--brand); font-weight:590; }
+footer { text-align:center; padding:64px 0 56px; background:var(--bg-alt); margin-top:80px; }
+footer h2 { font-size:22px; font-weight:600; color:var(--text); margin-bottom:10px; }
+footer p { font-size:15px; color:var(--text3); max-width:420px; margin:0 auto; }
+footer .qrcode-hint { margin-top:18px; padding:12px 28px; background:var(--surface); border-radius:12px; display:inline-block; border:1px solid var(--border); box-shadow:var(--shadow); }
+footer .qrcode-hint span { color:var(--brand); font-weight:700; }
 </style>
 </head>
 <body>
+<div class="theme-bar container">
+  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 暗色模式</button>
+</div>
+
 <header class="container">
-  <h1>江江好用 · AI创作工具导航</h1>
+  <h1>赛博上片指南 · AI创作工具导航</h1>
   <p>每日精选AI创作工具，覆盖视频生成 · 图像生成 · 设计工具 · 3D创作</p>
   <div class="count">📰 已收录 <span id="toolCount">0</span> 个工具，持续更新</div>
 </header>
@@ -106,21 +133,43 @@ footer .qrcode-hint span { color:var(--brand); font-weight:590; }
   <div class="grid" id="grid"></div>
 </div>
 
-<div class="divider"></div>
 <footer>
-  <h2>关注「江江好用」公众号</h2>
+  <h2>关注「赛博上片指南」公众号</h2>
   <p>每天早上获取最新AI创作工具推荐，以上工具均来自每日日报精选</p>
-  <div class="qrcode-hint">🔍 微信搜索 <span>江江好用</span> 关注</div>
+  <div class="qrcode-hint">🔍 微信搜索 <span>赛博上片指南</span> 关注</div>
 </footer>
 
 <script>
+// Theme toggle
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  if (html.dataset.theme === 'dark') {
+    html.dataset.theme = 'light';
+    btn.innerHTML = '🌙 暗色模式';
+    localStorage.setItem('theme', 'light');
+  } else {
+    html.dataset.theme = 'dark';
+    btn.innerHTML = '☀️ 浅色模式';
+    localStorage.setItem('theme', 'dark');
+  }
+}
+// Load saved theme
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'dark') {
+    document.documentElement.dataset.theme = 'dark';
+    document.getElementById('themeBtn').innerHTML = '☀️ 浅色模式';
+  }
+})();
+
 const TOOLS = [
   {n:"Kling 3.0/可灵",c:"视频生成",d:"快手AI视频生成，4K/60fps",u:"https://klingai.com",p:"6月10日"},
   {n:"Veo 3.1",c:"视频生成",d:"Google视频生成，原生音频+4K",p:"6月10日"},
   {n:"Sora 2",c:"视频生成",d:"OpenAI视频生成，已停服",p:"6月10日"},
   {n:"Seedance 2.0",c:"视频生成",d:"字节多模态视频模型，12路参考输入，1080p 🇨🇳",u:"https://seed.bytedance.com/zh/seedance2_0",p:"6月8日"},
   {n:"Seedance 3.0",c:"视频生成",d:"字节下一代视频模型，1小时长视频+多语情感配音 🇨🇳",u:"https://seed.bytedance.com/",p:"6月12日"},
-  {n:"JoyAI-Echo",c:"视频生成",d:"京东开源5分钟长视频生成框架，跨镜头音画一致 🇨🇳",u:"https://github.com/jd-opensource/joyai-echo",p:"6月14日"},
+  {n:"JoyAI-Echo",c:"视频生成",d:"京东开源5分钟长视频生成框架 🇨🇳",u:"https://github.com/jd-opensource/joyai-echo",p:"6月14日"},
   {n:"P-Video-Avatar",c:"视频生成",d:"Pruna AI单张照片生成动态数字人，10秒出片",u:"https://www.scenario.com/blog/meet-p-video-avatar",p:"6月15日"},
   {n:"Midjourney",c:"图像/视频生成",d:"V8.1速度提升4-5倍+首款视频模型V1",u:"https://www.midjourney.com",p:"6月10日"},
   {n:"Z-Image",c:"图像生成",d:"阿里通义开源60亿参数图像生成器 🇨🇳",u:"https://zimage.design/zh/",p:"6月10日"},
@@ -132,9 +181,9 @@ const TOOLS = [
   {n:"Pixso",c:"设计工具",d:"国内设计协作平台，AI智能设计 🇨🇳",u:"https://pixso.cn",p:"6月10日"},
   {n:"Felo AI Designer",c:"设计工具",d:"8+模型集成，30秒出稿",u:"https://felo.ai",p:"6月11日"},
   {n:"Genspark AI Design",c:"设计工具",d:"每天100免费积分，16+设计类别",u:"https://www.genspark.ai",p:"6月11日"},
-  {n:"Open Design 0.9.0",c:"设计工具",d:"Claude Design开源替代，155个Skill+150套设计系统",u:"https://open-design.ai/zh/",p:"6月13日"},
-  {n:"Lovart",c:"设计工具",d:"全球首个多模态AI设计Agent公测，海报VI故事板",u:"https://www.lovart.ai/zh",p:"6月14日"},
-  {n:"腾讯Ardot",c:"设计工具",d:"腾讯AI设计智能体公测，一句话生成可编辑UI设计稿 🇨🇳",u:"https://ardot.tencent.com/",p:"6月16日"},
+  {n:"Open Design 0.9.0",c:"设计工具",d:"Claude Design开源替代，155个Skill系统",u:"https://open-design.ai/zh/",p:"6月13日"},
+  {n:"Lovart",c:"设计工具",d:"全球首个多模态AI设计Agent公测",u:"https://www.lovart.ai/zh",p:"6月14日"},
+  {n:"腾讯Ardot",c:"设计工具",d:"腾讯AI设计智能体公测，一句话生成可编辑UI 🇨🇳",u:"https://ardot.tencent.com/",p:"6月16日"},
   {n:"Mew Design",c:"设计工具",d:"自然语言驱动的免费AI设计生成器 🇨🇳",u:"https://mew.design/zh",p:"6月16日"},
   {n:"Meshy 3D Agent",c:"3D创作",d:"全球首个3D创作AI Agent，多轮对话产出整套3D资产",u:"https://www.meshy.ai/",p:"6月13日"},
   {n:"Runway Aleph 2.0",c:"视频编辑",d:"编辑一帧自动应用全片",u:"https://runwayml.com",p:"6月11日"},
@@ -152,56 +201,27 @@ const TOOLS = [
 ];
 
 const allCats = [...new Set(TOOLS.map(t=>t.c))];
-const grid = document.getElementById('grid');
-const search = document.getElementById('search');
-const filters = document.getElementById('filters');
-const count = document.getElementById('toolCount');
-
+const grid=document.getElementById('grid'),search=document.getElementById('search'),count=document.getElementById('toolCount');
 count.textContent = TOOLS.length;
+let activeCat=null;
+document.getElementById('filters').innerHTML='<span class="filter-pill active" data-cat="">全部</span>'+allCats.map(c=>`<span class="filter-pill" data-cat="${c}">${c}</span>`).join('');
 
-let activeCat = null;
-filters.innerHTML = '<span class="filter-pill active" data-cat="">全部</span>';
-allCats.forEach(c => {
-  filters.innerHTML += `<span class="filter-pill" data-cat="${c}">${c}</span>`;
-});
-
-function formatDate(d) { return d || ''; }
-
-function render(filterCat, query) {
-  query = query.toLowerCase();
-  let shown = 0;
-  grid.innerHTML = '';
-  TOOLS.forEach(t => {
-    const matchCat = !filterCat || t.c === filterCat;
-    const matchQ = !query || t.n.toLowerCase().includes(query) || t.d.toLowerCase().includes(query);
-    if (!matchCat || !matchQ) return;
-    shown++;
-    const dateHtml = t.p ? `<div class="card-date">📰 收录于 ${t.p} 日报</div>` : '';
-    const link = t.u
-      ? `<a href="${t.u}" target="_blank" rel="noopener" class="card-link">🔗 访问官网</a>`
-      : `<span class="card-link disabled">暂无链接</span>`;
-    grid.innerHTML += `<div class="card">
-      <div class="card-name">${t.n}</div>
-      ${dateHtml}
-      <div class="card-cat">${t.c}</div>
-      <div class="card-desc">${t.d}</div>
-      ${link}
-    </div>`;
-  });
-  count.textContent = shown;
+function render(fc,q){
+  q=q.toLowerCase();let s=0;grid.innerHTML='';
+  TOOLS.forEach(t=>{
+    if((!fc||t.c===fc)&&(!q||t.n.toLowerCase().includes(q)||t.d.toLowerCase().includes(q))){
+      s++;const d=t.p?`<div class="card-date">📰 收录于 ${t.p} 日报</div>`:'';
+      const l=t.u?`<a href="${t.u}" target="_blank" rel="noopener" class="card-link">🔗 访问官网</a>`:`<span class="card-link disabled">暂无链接</span>`;
+      grid.innerHTML+=`<div class="card"><div class="card-name">${t.n}</div>${d}<div class="card-cat">${t.c}</div><div class="card-desc">${t.d}</div>${l}</div>`}
+  });count.textContent=s;
 }
-
-render(null, '');
-
-filters.addEventListener('click', e => {
-  if (!e.target.classList.contains('filter-pill')) return;
-  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-  e.target.classList.add('active');
-  activeCat = e.target.dataset.cat || null;
-  render(activeCat, search.value);
+render(null,'');
+document.getElementById('filters').addEventListener('click',e=>{
+  if(!e.target.classList.contains('filter-pill'))return;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  e.target.classList.add('active');activeCat=e.target.dataset.cat||null;render(activeCat,search.value);
 });
-
-search.addEventListener('input', () => render(activeCat, search.value));
+search.addEventListener('input',()=>render(activeCat,search.value));
 </script>
 </body>
 </html>

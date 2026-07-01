@@ -73,6 +73,15 @@ header .count {
 }
 .search-wrap input:focus { border-color:var(--brand); }
 .search-wrap input::placeholder { color:var(--text4); }
+.search-wrap .free-btn {
+  display:inline-block; margin-left:10px; padding:10px 20px;
+  border:2px solid var(--border); border-radius:10px;
+  background:var(--surface); color:var(--text2);
+  font-size:14px; font-weight:600; cursor:pointer;
+  transition:all .2s; vertical-align:top;
+}
+.search-wrap .free-btn:hover { border-color:var(--text3); }
+.search-wrap .free-btn.active { background:#2ecc71; color:#fff; border-color:#2ecc71; }
 
 .filters-wrap { margin-bottom:40px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .filters-wrap::-webkit-scrollbar { height:0; }
@@ -155,6 +164,7 @@ footer .qrcode-hint span { color:var(--brand); font-weight:700; }
 
   <div class="search-wrap">
     <input type="text" id="search" placeholder="搜索工具名或关键词…" autocomplete="off">
+    <button id="freeBtn" class="free-btn">🆓 仅看免费</button>
   </div>
   <div class="filters-wrap"><div class="filters" id="filters"></div></div>
   <div class="grid" id="grid"></div>
@@ -282,33 +292,41 @@ const TOOLS = [
   {n:"OpenMontage",c:"视频生成",d:"全球首个开源Agent驱动视频生产系统，AI编程助手变视频工作室，28K+ Stars",u:"https://github.com/calesthio/OpenMontage",r:4,re:"开源视频工厂"},
   {n:"Canva Grow 2.0",c:"设计工具",d:"Canva端到端AI营销引擎，广告创作+发布+优化全流程一体化",u:"https://www.canva.com/",r:3,re:"全链路营销"},
   {n:"TTSMaker",c:"音频生成",d:"完全免费可商用TTS工具，50+语言600+声音，🔥无限量声音不扣配额 🇨🇳",u:"https://www.ttsmaker.cn/",r:4,re:"免费可商用配音"},
-  {n:"Vidu Q3",c:"视频生成",d:"清华生数科技多镜头叙事视频生成，智慧剪辑16秒出片，国内直连 🇨🇳",u:"https://www.vidu.com/zh/",r:3,re:"多镜头叙事"},
-  {n:"Nano Banana",c:"图像生成",d:"Google Gemini内置AI图片编辑，自然语言改背景/换物体，免费",u:"https://gemini.google.com",r:3,re:"免费修图神器"}
+  {n:"Vidu Q3",c:"视频生成",d:"清华生数科技多镜头叙事视频生成，智慧剪辑16秒出片，国内直连 🇨🇳",u:"https://www.vidu.com/zh/",r:3,re:"多镜头叙事",f:1}
 ];
 
 // Sort by rating descending (same rating → alphabetical)
 TOOLS.sort((a,b)=>(b.r||0)-(a.r||0)||a.n.localeCompare(b.n));
 
+let showFree = 0;
 const allCats = [...new Set(TOOLS.map(t=>t.c))];
-const grid=document.getElementById('grid'),search=document.getElementById('search'),count=document.getElementById('toolCount');
+const grid=document.getElementById('grid'),search=document.getElementById('search'),count=document.getElementById('toolCount'),freeBtn=document.getElementById('freeBtn');
 count.textContent = TOOLS.length;
 let activeCat=null;
 document.getElementById('filters').innerHTML='<span class="filter-pill active" data-cat="">全部</span>'+allCats.map(c=>`<span class="filter-pill" data-cat="${c}">${c}</span>`).join('');
 
-function render(fc,q){
+function render(fc,q,free){
   q=q.toLowerCase();let s=0;grid.innerHTML='';
   TOOLS.forEach(t=>{
+    if(free && !t.f)return;
     if((!fc||t.c===fc)&&(!q||t.n.toLowerCase().includes(q)||t.d.toLowerCase().includes(q))){
       const l=t.u?`<a href="${t.u}" target="_blank" rel="noopener" class="card-link">🔗 访问官网</a>`:`<span class="card-link disabled">暂无链接</span>`;
       const stars='★'.repeat(t.r||0)+'☆'.repeat(5-(t.r||0));
       s++;grid.innerHTML+=`<div class="card"><div class="card-name">${t.n}</div><div class="card-stars">${stars} · ${t.re}</div><div class="card-cat">${t.c}</div><div class="card-desc">${t.d}</div>${l}</div>`}
   });count.textContent=s;
 }
-render(null,'');
+render(null,'',0);
 document.getElementById('filters').addEventListener('click',e=>{
   if(!e.target.classList.contains('filter-pill'))return;
   document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
-  e.target.classList.add('active');activeCat=e.target.dataset.cat||null;render(activeCat,search.value);
+  e.target.classList.add('active');activeCat=e.target.dataset.cat||null;render(activeCat,search.value,showFree);
+});
+freeBtn.addEventListener('click',()=>{
+  showFree=!showFree;
+  freeBtn.classList.toggle('active',showFree);
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  activeCat=null;
+  render(null,search.value,showFree);
 });
 search.addEventListener('input',()=>render(activeCat,search.value));
 </script>
